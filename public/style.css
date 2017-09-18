@@ -1,0 +1,38 @@
+body{
+    margin: 0 auto;
+    padding: 0;
+    background-color: black;
+    width: 100%;
+}
+
+h1{
+    color: white;
+    font-size: 5rem;
+    font-weight: bold;
+    margin: 2rem 0px 0px 0px;
+}
+
+.title{
+ margin: 0 auto;
+    width: 100%;
+    text-align: center;   
+}
+
+
+.timer-container{
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+}
+
+#timer{
+    color: white;
+    font-size: 37rem;
+    font-weight: bold;
+padding-top: 20px;
+}
+
+.negative-timer{
+    background-color: red;
+}
+

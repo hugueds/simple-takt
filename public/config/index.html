@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <title>TAKT DA REVISAO</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../config.css" rel="stylesheet">
+    <link href="../materialize.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="config-container">
+        <div class='row'>
+            <div class='input-field col s12'>
+                <label for="instance">INSTÂNCIA</label>
+                <select class='input-field' name="instance" id="instance">
+                    <option value="0" >FLUXO QUENTE </option>
+                    <option value="1" >FLUXO FRIO </option>
+                    <option value="2" >FLUXO ONIBUS </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class='input-field col s6'>
+                <label for="minutes"> MINUTOS </label>
+                <input name='minutes' id='minutes' type="number" min='0' max='59' />
+            </div>        
+            <div class='input-field col s6'>
+                <label for="seconds"> SEGUNDOS </label>
+                <input id='seconds' name='seconds' type="number" min='0' max='59' data-length="2" />
+            </div>
+        </div>
+
+
+
+        <button id='save-button' class='save-button waves-effect waves-light btn'>SALVAR</button>
+
+    </div>
+
+
+
+    <script src='../socket.io.js'></script>    
+    <script src='../node_modules/jquery/dist/jquery.min.js'></script>
+    <script src='../materialize.min.js'></script>
+    <script src='../scripts.js'></script>
+
+    <script>
+        $(document).ready(function () {
+            $('select').material_select();
+        })
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+
+/*FORM CONFIG*/
+
+
+.config-container{
+    margin-top: 5%;
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+label{
+    font-size: 100px;
+}
+
+div#inner-editor{
+    font-size: 10rem;    
+    
+}
+
+.select-dropdown{
+    font-size: 10rem;    
+    
+}
+
+select{
+    font-size: 10rem;    
+}
+
+ option{
+    font-size: 10rem;    
+}
+
+#minutes{
+    height: 15rem;    
+    font-size: 10rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+#seconds{
+    height: 15rem;
+    font-size: 10rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+#save-button{
+    height: 7rem;
+    font-size: 4rem;
+}
