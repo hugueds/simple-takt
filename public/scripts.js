@@ -1,16 +1,19 @@
 ﻿var socket = io.connect('http://10.8.66.81:8080');
-var instance;
+var instance = {
+    id: Number,
+    currentTime: Number
+};
 
 $(document).ready(function () {
   	init();
 });
 
-function init() {
-    //var instance = { id: 0, name: "Quente", initial: "7:30", currentTime: 0 };
-    instance = getLocalInstance();
-    if (!instance && window.location.pathname != "/config/") {
-        window.location = '/config';
-        localStorage.clear('currentStation');
+function init() {    
+    instance.id = getLocalInstance();
+    console.log(instance)
+    if (!instance.id && window.location.pathname == "/") {
+        window.location = '/home';
+        localStorage.clear('currentInstance');
         return;
     }
     socket.on('connect', function () {
@@ -18,10 +21,9 @@ function init() {
             if (!instance) return;
             socket.emit('get timer', instance);
         }, 1000);
-
     });
 
-    socket.on('timer', function (data) {
+    socket.on('timer', function (data) {              
         updateTimer(data.currentTime);
     });
 
@@ -87,9 +89,9 @@ function convertMsToTime(ms) {
 CONFIG PAGE
 */
 
-$('.save-button').on('click', function () {
+$('.save-button').on('click', function ($event) {
     saveChanges(function(){
-        window.location = '/';    
+        console.log('Changes Saved');
     });    
 })
 
@@ -104,9 +106,8 @@ function saveChanges(callback) {
     if (valueMinutes > 59 || valueSeconds > 59 || (typeof valueSeconds != 'number') || (typeof valueMinutes != 'number') ){
         return alert('Favor preencher com horário válido');
     }
-    inst.initial = $('input[name=minutes]').val() + ':' + $('input[name=seconds]').val();
-    setLocalInstance(inst);
-    socket.emit('reinitialize', inst);   
+    inst.initial = $('input[name=minutes]').val() + ':' + $('input[name=seconds]').val();    
+    socket.emit('save changes', inst);   
     callback();
 }
 

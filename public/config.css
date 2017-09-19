@@ -9,27 +9,27 @@
     text-align: center;
 }
 
-label{
-    font-size: 100px;
-}
+    label{
+        font-size: 100px;
+    }
 
-div#inner-editor{
-    font-size: 10rem;    
-    
-}
+    div#inner-editor{
+        font-size: 10rem;    
+        
+    }
 
-.select-dropdown{
-    font-size: 10rem;    
-    
-}
+    .select-dropdown{
+        font-size: 10rem;    
+        
+    }
 
-select{
-    font-size: 10rem;    
-}
+    select{
+        font-size: 10rem;    
+    }
 
- option{
-    font-size: 10rem;    
-}
+    option{
+        font-size: 10rem;    
+    }
 
 #minutes{
     height: 15rem;    

@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <title>TAKT DA REVISAO</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../materialize.min.css" rel="stylesheet">
+    <style rel='stylesheet' type='text/css'>
+
+        body {
+            width: 100%;            
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        #save-button {
+            height: 100px;
+            width: 250px;
+            position: relative;
+            margin: auto;
+            margin-left: 42.6%;
+            font-size: 2.5rem;
+            margin-top: 100px;
+        }
+
+        .flux-container{
+            margin: 0 auto;
+            width: 75%;            
+            text-align: center;
+            display: flex;
+            justify-content: space-between;            
+        }
+
+        .flux-radio{            
+            flex: 1 1 auto;
+        }
+
+        label{
+            font-size: 2.5rem !important;
+        }
+
+        .config-container{
+            margin-top: 200px;            
+        }
+
+        
+       
+    </style>
+
+</head>
+
+<body>    
+
+    <h1>ESCOLHA UMA LINHA</h1>
+
+    <div class="config-container">
+        
+
+        <div class="row">
+
+            <div class='flux-container'>
+
+                <input class='flux-radio' name="flux" type="radio" id="hot-flux" value='0' checked/>
+                <label for="hot-flux">FLUXO QUENTE</label>
+
+                <input class='flux-radio' name="flux" type="radio" id="cold-flux" value='1' />
+                <label for="cold-flux">FLUXO FRIO</label>
+
+                <input class='flux-radio' name="flux" type="radio" id="bus-flux" value='2' />
+                <label for="bus-flux">FLUXO ÔNIBUS</label>
+
+            </div>
+
+        </div>
+
+        <button id='save-button' class='save-button waves-effect waves-light btn'>SALVAR</button>
+
+    </div>
+
+
+    <script src='../node_modules/jquery/dist/jquery.min.js'></script>
+    <script src='../materialize.min.js'></script>
+
+    <script>
+        $(document).ready(function () {
+            $('select').material_select();
+        });
+
+        localStorage.clear('currentStation');
+
+        $('#save-button').on('click', function ($event) {            
+            var instance = $('input[name="flux"]:checked').val(); //$('select[name=instance]').val();
+            localStorage.setItem('currentInstance', JSON.stringify(instance));
+            window.location = '/';
+        });
+
+        $(document).click(function () {
+            var val = $('input[name="flux"]:checked').val();
+            console.log(val)
+        })
+    </script>
+
+</body>
+
+</html>
