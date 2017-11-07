@@ -1,38 +1,71 @@
-body{
+body {
     margin: 0 auto;
     padding: 0;
     background-color: black;
     width: 100%;
+    color: white;
 }
 
-h1{
+h1 {
     color: white;
     font-size: 5rem;
     font-weight: bold;
     margin: 2rem 0px 0px 0px;
 }
 
-.title{
- margin: 0 auto;
+.title {
+    margin: 0 auto;
     width: 100%;
     text-align: center;   
 }
 
 
-.timer-container{
+.timer-container {
     margin: 0 auto;
     width: 100%;
     text-align: center;
 }
 
-#timer{
-    color: white;
-    font-size: 37rem;
-    font-weight: bold;
-padding-top: 20px;
+.production-container {
+    display: block;
+    margin: 0 auto;    
 }
 
-.negative-timer{
-    background-color: red;
+.production-box {
+    display: block;
+    float: left;
+    border: 2px solid white;
+    width: 20%;    
+    text-align: center;
+    margin-left: 20%;
 }
+
+.production-text {
+    font-size: 1.3rem;
+    margin-top: 2.5%;
+}
+
+.production-value {
+    font-size: 10rem;
+}
+
+.timer-value {        
+    font-size: 34rem;
+    padding-top: 20px;
+    font-weight: bold;
+}
+
+.negative-timer {
+    background-color: red;    
+}
+
+.andon-timer {
+    background-color: yellow !important;
+    color: black !important;
+}
+
+.negative-timer-value {
+    font-size: 30rem !important ;
+}
+
 

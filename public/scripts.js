@@ -1,39 +1,45 @@
-﻿var socket = io.connect('http://10.8.66.81:8080');
+﻿var socket;
+
 var instance = {
-    id: Number,
-    currentTime: Number
+    id: -1,
+    name: '',
+    initial: '00:00',
+    objective: 0,
+    produced: 0,
+    currentTime: 0,
+    andon : false
 };
 
+var ip = '';
+
 $(document).ready(function () {
-  	init();
+  	init(function(){
+        socket = io();
+        socketHandler();
+    });
 });
 
-function init() {    
+function init(callback) {    
     instance.id = getLocalInstance();
     console.log(instance)
-    if (!instance.id && window.location.pathname == "/") {
+    if ((!instance.id || instance.id == -1) && window.location.pathname == "/") {
         window.location = '/home';
         localStorage.clear('currentInstance');
         return;
     }
-    socket.on('connect', function () {
-        setInterval(function () {
-            if (!instance) return;
-            socket.emit('get timer', instance);
-        }, 1000);
-    });
-
-    socket.on('timer', function (data) {              
-        updateTimer(data.currentTime);
-    });
-
-    window.addEventListener('keydown', function (key) {
+    window.addEventListener('keydown', function (key) {        
         if (key.keyCode == 34) {
             // if (instance.currentTime <= 0){
             reinitialize(instance);
             // }            
         }
+        if (key.keyCode == 33) {
+            console.log('Chamando andon');            
+            socket.emit('andon', instance);
+        }
     });
+
+    callback();
 
 }
 
@@ -46,12 +52,21 @@ function updateTimer(ms) {
     var timer = convertMsToTime(ms);
     if (ms >= 0) {
         $('body').removeClass('negative-timer');
+        $('.timer-value').removeClass('negative-timer-value');
     } else {
         $('body').addClass('negative-timer');
+        $('.timer-value').addClass('negative-timer-value');
+    }
+    if (instance.andon && ms >= 0 ) {
+        $('body').addClass('andon-timer');        
+    } else {
+        $('body').removeClass('andon-timer');                
     }
     $('#timer').text(timer);
     return true;
 }
+
+
 
 function setLocalInstance(inst) {
     localStorage.setItem('currentInstance', JSON.stringify(inst));
@@ -122,10 +137,41 @@ $('input[name=minutes]').keydown(function (e) {
 
 $('input[name=seconds]').keydown(function (e) {   
     var value2 = parseInt($('input[name=seconds]').val());    
-    if (value2 >59){
+    if (value2 > 59){
         $('input[name=seconds]').val(59);
     } else if (value2 < 0 ){
         $('input[name=seconds]').val(0);
     }    
 })
 
+
+function socketHandler() {
+    socket.on('connect', function () {
+        console.log('Socket Connected');
+        setInterval(function () {
+            if (!instance) return;
+            socket.emit('get timer', instance);            
+        }, 1000);
+    });
+
+    socket.on('timer', function (data) {              
+        updateTimer(data.currentTime);
+        $('#objective').text(data.objective);
+        $('#produced').text(data.produced);
+    });
+
+    socket.on('new connection', function(ip) {
+        console.log('Novo dispositivo conectado: ', ip);
+    });
+
+    socket.emit('get ip');
+
+    socket.on('ip', function(data) {
+        console.log('Meu endereço: ', data);
+    });
+
+    socket.on('andon', (andon) => {
+        instance.andon = andon;
+    });
+    
+}

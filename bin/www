@@ -4,36 +4,38 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('simple-timer:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('simple-timer:server');
+const http = require('http');
+const dotenv = require('dotenv').config();
+
+var port;
 
 /**
  * Get port from environment and store in Express.
  */
+if (process.argv0) {
+  console.log('Development mode is set');
+  port = normalizePort(process.env.DEV_PORT || '3000');
+} else {
+  port = normalizePort(process.env.PORT || '8080');
+}
 
-var port = normalizePort(process.env.PORT || '8080');
+console.log(process.argv0)
+
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-
-var config = require('../config');
+const server = http.createServer(app);
+const config = require('../config');
 
 var instances = config.instances;
 const MAX_INSTANCES = instances.length;
 
-var io = require('socket.io')(server);
+const io = require('socket.io', { forceNew: true, 'multiplex': false })(server);
 
 var clients = [];
 
-instances.map( i => {
-  i.currentTime = convertToMs(i.initial);
-})
+instances.map(i => i.currentTime = convertToMs(i.initial));
 
 console.log(instances);
 
@@ -41,68 +43,93 @@ io.on('connection', (socket) => {
 
   clients.push(socket);
 
-  socket.on('get timer', (data) => {    
-    let instance = instances[data.id];    
+  let client = socket.request.connection.remoteAddress.slice(7);
+
+  io.emit('new connection', client);
+
+  console.log('New connection =>', client);
+
+  socket.on('get ip', function () {
+    socket.emit('ip', clients.indexOf(socket));
+  });
+
+  socket.on('get timer', (data) => {
+    let instance = instances[data.id];
     socket.emit('timer', instance);
   });
 
-  socket.on('reinitialize', (data) => {        
-    let instance = instances[data.id];       
-    let initialMs = convertToMs(instance.initial);    
+  socket.on('reinitialize', (data) => {
+    let instance = instances[data.id];
+    let initialMs = convertToMs(instance.initial);
     instances[data.id].currentTime = initialMs;
     io.emit('timer', instance);
-  })
+  });
+
+  socket.on('andon', (data) => {
+    let andon = !instances[data.id].andon
+    instances[data.id].andon = andon
+    console.log('Andon Call for station ID:', data.id, 'is', andon);
+    socket.emit('andon', andon);
+  });
 
   socket.on('update timer', (data) => {
     updateTimer(instances[data.instance], data.timer);
     socket.emit('updated', `Instance ${instances[data.instance]} updated`);
   });
 
-  socket.on('save changes', (data) => {    
+  socket.on('save changes', (data) => {
     instances[data.id] = data;
     io.emit('reinitialize', data.id)
     console.log(`Changes has been done at Instance ${data.id}`);
   });
 
   socket.on('disconnect', (socket) => {
-    var idx = clients.indexOf(socket);
-    if (idx > -1) clients.splice(idx, 1);
+    let idx = clients.indexOf(socket);
+    if (idx > -1) {
+      clients.splice(idx, 1);
+      console.log('Client disconnected', idx);
+    }     
   });
-
-  io.emit('newConnection', socket.request.connection.remoteAddress.slice(7));
-
 
 })
 
 
 init();
 
-function init(){
-
-  setInterval(() => {
-    for (let i =0 ; i < MAX_INSTANCES; i++){
-      countDown(instances[i]);
-    }    
-  }, 1000);
-
+function init() {
+  setInterval(pool, 1000);
 }
 
+function pool() {
+  for (let i = 0; i < MAX_INSTANCES; i++) {
+    let instance = instances[i];
+    countDown(instance);
+    increaseProduction(instance);
+  }
+}
 
-function countDown(instance){
+function countDown(instance) {
   let currentTime = instance.currentTime - 1000;
-  instance.currentTime = currentTime;      
+  instance.currentTime = currentTime;
 }
 
-function updateTimer(instance, time){
-  instances[instance].currentTime = time; 
+function updateTimer(instance, time) {
+  instances[instance].currentTime = time;
 }
 
-function convertToMs(timeString){
-  if (!timeString){
+function increaseProduction(instance) {
+  if (!instance.andon && instance.currentTime < 0) {
+    instance.currentTime = convertToMs(config.instances[instance.id].initial);
+    instances[instance.id].produced += 1;
+  }
+}
+
+function convertToMs(timeString) {
+  if (!timeString) {
     return;
   }
-  var tms = ((Number(timeString.split(':')[0]) * 60) + (Number(timeString.split(':')[1])))
-  tms = tms*1000;
+  let tms = ((Number(timeString.split(':')[0]) * 60) + (Number(timeString.split(':')[1])))
+  tms = tms * 1000;
   return tms;
 }
 
@@ -179,3 +206,7 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+process.on('exit', function () {
+  console.log('Ending application');
+})

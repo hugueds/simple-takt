@@ -5,7 +5,7 @@
     <title>TAKT DA REVISAO</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="style.css" rel="stylesheet">    
+    <link href="style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -14,15 +14,33 @@
         <h1>TIMER</h1>
     </div> -->
 
-    <div class='timer-container'>
-        <span id="timer">   00:00   </span>
+    <div class="container">
+
+
+        <div class='timer-container'>
+            <div class='timer-value' id="timer">
+                00:00
+            </div>
+        </div>
+
+        <div class='production-container'>
+
+            <div class="production-box">
+                <div class='production-text'> OBJETIVO </div>
+                <div class='production-value' id='objective'> 0 </div>
+            </div>
+
+            <div class="production-box">
+                <div class='production-text'> PRODUZIDOS </div>
+                <div class='production-value' id='produced'> 0 </div>
+            </div>
+
+        </div>
+
     </div>
 
-
-    <!-- <button class='config-button' >Configurações</button> -->
-
-    <script src='node_modules/jquery/dist/jquery.min.js'></script>
-    <script src='socket.io.js'></script>
+    <script src='lib/jquery.min.js'></script>
+    <script src='lib/socket.io.js'></script>
     <script src='scripts.js'></script>
 
 </body>
