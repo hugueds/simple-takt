@@ -7,12 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="../materialize.min.css" rel="stylesheet">
     <style rel='stylesheet' type='text/css'>
-
         body {
-            width: 100%;            
+            width: 100%;
         }
 
-        h1{
+        h1 {
             text-align: center;
         }
 
@@ -26,38 +25,35 @@
             margin-top: 100px;
         }
 
-        .flux-container{
+        .flux-container {
             margin: 0 auto;
-            width: 75%;            
+            width: 75%;
             text-align: center;
             display: flex;
-            justify-content: space-between;            
+            justify-content: space-between;
         }
 
-        .flux-radio{            
+        .flux-radio {
             flex: 1 1 auto;
         }
 
-        label{
+        label {
             font-size: 2.5rem !important;
         }
 
-        .config-container{
-            margin-top: 200px;            
+        .config-container {
+            margin-top: 200px;
         }
-
-        
-       
     </style>
 
 </head>
 
-<body>    
+<body>
 
     <h1>ESCOLHA UMA LINHA</h1>
 
     <div class="config-container">
-        
+
 
         <div class="row">
 
@@ -81,22 +77,23 @@
     </div>
 
 
-    <script src='../node_modules/jquery/dist/jquery.min.js'></script>
+    <script src='../lib/jquery.1.x.min.js'></script>
     <script src='../materialize.min.js'></script>
 
     <script>
+
         $(document).ready(function () {
+            localStorage.clear('currentStation');
             $('select').material_select();
         });
 
-        localStorage.clear('currentStation');
 
-        $('#save-button').on('click', function ($event) {            
+        $('#save-button').on('click', function ($event) {
             var instance = $('input[name="flux"]:checked').val(); //$('select[name=instance]').val();
             localStorage.setItem('currentInstance', JSON.stringify(instance));
             window.location = '/';
         });
-        
+
     </script>
 
 </body>

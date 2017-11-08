@@ -41,16 +41,16 @@ h1 {
 }
 
 .production-text {
-    font-size: 1.3rem;
-    margin-top: 2.5%;
+    font-size: 1rem;
+    margin-top: 1.5%;
 }
 
 .production-value {
-    font-size: 10rem;
+    font-size: 5rem;
 }
 
 .timer-value {        
-    font-size: 34rem;
+    font-size: 30em;
     padding-top: 20px;
     font-weight: bold;
 }
@@ -65,7 +65,7 @@ h1 {
 }
 
 .negative-timer-value {
-    font-size: 30rem !important ;
+    font-size: 28rem !important ;
 }
 
 

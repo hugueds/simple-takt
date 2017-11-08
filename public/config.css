@@ -4,23 +4,21 @@
 
 .config-container{
     margin-top: 5%;
-    width: 50%;
+    width: 40%;
     margin: 0 auto;
     text-align: center;
 }
 
     label{
-        font-size: 100px;
+        font-size: 120px;
     }
 
     div#inner-editor{
-        font-size: 10rem;    
-        
+        font-size: 12rem;   
     }
 
     .select-dropdown{
         font-size: 10rem;    
-        
     }
 
     select{

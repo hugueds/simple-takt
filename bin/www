@@ -8,18 +8,14 @@ const app = require('../app');
 const debug = require('debug')('simple-timer:server');
 const http = require('http');
 const dotenv = require('dotenv').config();
+const cron = require('node-cron');
 
 var port;
 
 /**
  * Get port from environment and store in Express.
  */
-if (process.argv0) {
-  console.log('Development mode is set');
-  port = normalizePort(process.env.DEV_PORT || '3000');
-} else {
-  port = normalizePort(process.env.PORT || '8080');
-}
+port = normalizePort(process.env.PORT || '82');
 
 console.log(process.argv0)
 
@@ -31,7 +27,14 @@ const config = require('../config');
 var instances = config.instances;
 const MAX_INSTANCES = instances.length;
 
-const io = require('socket.io', { forceNew: true, 'multiplex': false })(server);
+cron.schedule('0 0 1 * * *', function () {
+  for (let i = 0; i < MAX_INSTANCES; i++) {
+    instances[i].produced = 0;
+  }
+  console.log('Reinitiating production');  
+});
+
+const io = require('socket.io')(server);
 
 var clients = [];
 
@@ -62,7 +65,8 @@ io.on('connection', (socket) => {
     let instance = instances[data.id];
     let initialMs = convertToMs(instance.initial);
     instances[data.id].currentTime = initialMs;
-    io.emit('timer', instance);
+    instances[data.id].produced++;
+    // io.emit('timer', instance);
   });
 
   socket.on('andon', (data) => {
@@ -88,7 +92,7 @@ io.on('connection', (socket) => {
     if (idx > -1) {
       clients.splice(idx, 1);
       console.log('Client disconnected', idx);
-    }     
+    }
   });
 
 })
@@ -97,7 +101,7 @@ io.on('connection', (socket) => {
 init();
 
 function init() {
-  setInterval(pool, 1000);
+  const routineInterval = setInterval(pool, 1000);
 }
 
 function pool() {

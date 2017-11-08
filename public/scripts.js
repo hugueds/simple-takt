@@ -1,6 +1,4 @@
-﻿var socket;
-
-var instance = {
+﻿var instance = {
     id: -1,
     name: '',
     initial: '00:00',
@@ -12,9 +10,38 @@ var instance = {
 
 var ip = '';
 
+var socket = io.connect('10.8.66.81:8080');
+
+socket.on('connect', function () {
+    console.log('Socket Connected');
+    setInterval(function () {
+        if (!instance) return;
+        socket.emit('get timer', instance);            
+    }, 1000);
+});
+
+socket.on('timer', function (data) {              
+    updateTimer(data.currentTime);
+    $('#objective').text(data.objective);
+    $('#produced').text(data.produced);
+});
+
+socket.on('new connection', function(ip) {
+    console.log('Novo dispositivo conectado: ', ip);
+});
+
+socket.emit('get ip');
+
+socket.on('ip', function(data) {
+    console.log('Meu endereço: ', data);
+});
+
+socket.on('andon', function(andon) {
+    instance.andon = andon;
+});
+
 $(document).ready(function () {
   	init(function(){
-        socket = io();
         socketHandler();
     });
 });
@@ -25,7 +52,7 @@ function init(callback) {
     if ((!instance.id || instance.id == -1) && window.location.pathname == "/") {
         window.location = '/home';
         localStorage.clear('currentInstance');
-        return;
+       return;
     }
     window.addEventListener('keydown', function (key) {        
         if (key.keyCode == 34) {
@@ -33,7 +60,7 @@ function init(callback) {
             reinitialize(instance);
             // }            
         }
-        if (key.keyCode == 33) {
+        if (key.keyCode == 33 ) {
             console.log('Chamando andon');            
             socket.emit('andon', instance);
         }
@@ -146,32 +173,7 @@ $('input[name=seconds]').keydown(function (e) {
 
 
 function socketHandler() {
-    socket.on('connect', function () {
-        console.log('Socket Connected');
-        setInterval(function () {
-            if (!instance) return;
-            socket.emit('get timer', instance);            
-        }, 1000);
-    });
 
-    socket.on('timer', function (data) {              
-        updateTimer(data.currentTime);
-        $('#objective').text(data.objective);
-        $('#produced').text(data.produced);
-    });
-
-    socket.on('new connection', function(ip) {
-        console.log('Novo dispositivo conectado: ', ip);
-    });
-
-    socket.emit('get ip');
-
-    socket.on('ip', function(data) {
-        console.log('Meu endereço: ', data);
-    });
-
-    socket.on('andon', (andon) => {
-        instance.andon = andon;
-    });
+    
     
 }
