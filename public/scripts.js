@@ -149,6 +149,7 @@ function saveChanges(callback) {
         return alert('Favor preencher com horário válido');
     }
     inst.initial = $('input[name=minutes]').val() + ':' + $('input[name=seconds]').val();    
+    console.log('Enviando dados para o servidor', inst);
     socket.emit('save changes', inst);   
     callback();
 }
