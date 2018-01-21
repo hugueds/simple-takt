@@ -8,7 +8,6 @@ const app = require('../app');
 const debug = require('debug')('simple-timer:server');
 const http = require('http');
 const dotenv = require('dotenv').config();
-const cron = require('node-cron');
 
 var port;
 
@@ -20,72 +19,7 @@ port = normalizePort(process.env.PORT || '82');
 app.set('port', port);
 
 const server = http.createServer(app);
-const config = require('../config');
-
-var instances = config.instances;
-const MAX_INSTANCES = instances.length;
-
-cron.schedule('0 10 7 * * *', function () {
-  for (let i = 0; i < MAX_INSTANCES; i++) {
-    instances[i].produced = 0;
-  }
-  console.log('Reinitiating production...');  
-});
-
 const socketServer = require('../socketServer')(server);
-
-var clients = [];
-
-instances.map(i => i.currentTime = convertToMs(i.initial));
-
-console.log(instances);
-
-init();
-
-function init() {
-  const routineInterval = setInterval(pool, 1000);
-}
-
-function pool() {
-  for (let i = 0; i < MAX_INSTANCES; i++) {
-    let instance = instances[i];
-    countDown(instance);
-    increaseProduction(instance);
-  }
-}
-
-function countDown(instance) {
-  let currentTime = instance.currentTime - 1000;
-  instance.currentTime = currentTime;
-}
-
-function updateTimer(instance, time) {
-  instances[instance].currentTime = time;
-}
-
-function increaseProduction(instance) {
-  if (instances[instance.id].produced >= instances[instance.id].objective) {
-    return;
-  }
-  if (!instance.andon && instance.currentTime < 0) {
-    instance.currentTime = convertToMs(config.instances[instance.id].initial);
-    instances[instance.id].produced += 1;
-  }
-}
-
-function convertToMs(timeString) {
-  if (!timeString) {
-    return;
-  }
-  let tms = ((Number(timeString.split(':')[0]) * 60) + (Number(timeString.split(':')[1])))
-  tms = tms * 1000;
-  return tms;
-}
-
-
-
-
-
 
 
 /**

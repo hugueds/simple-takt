@@ -1,14 +1,30 @@
 module.exports = function (server) {
 
     const io = require('socket.io')(server);
+    const cron = require('node-cron');
+    const config = require('./config');
+
+    var instances = config.instances;
+    const MAX_INSTANCES = instances.length;
+    instances.map(i => i.currentTime = convertToMs(i.initial));
+
+
+    cron.schedule('0 10 7 * * *', function () {
+        for (let i = 0; i < MAX_INSTANCES; i++) {
+            instances[i].produced = 0;
+        }
+        console.log('Reinitiating production...');
+    });
+
+    var clients = [];
 
     io.on('connection', (socket) => {
 
-        clients.push(socket);
+        let client = socket.request.connection.remoteAddress.slice(7);       
+
+        clients.push(client);
 
         console.log(clients);
-
-        let client = socket.request.connection.remoteAddress.slice(7);
 
         io.emit('new connection', client);
 
@@ -27,7 +43,7 @@ module.exports = function (server) {
             let instance = instances[data.id];
             let initialMs = convertToMs(instance.initial);
             instances[data.id].currentTime = initialMs;
-            instances[data.id].produced++;            
+            instances[data.id].produced++;
         });
 
         socket.on('andon', (data) => {
@@ -48,8 +64,8 @@ module.exports = function (server) {
             console.log(`Changes has been done at Instance ${data.id}`);
         });
 
-        socket.on('disconnect', (socket) => {
-            let idx = clients.indexOf(socket);
+        socket.on('disconnect', (socket) => {            
+            let idx = clients.indexOf(client);            
             if (idx > -1) {
                 clients.splice(idx, 1);
                 console.log('Client disconnected', idx);
@@ -57,4 +73,46 @@ module.exports = function (server) {
         });
 
     });
+
+    init();
+
+    function init() {
+        const routineInterval = setInterval(pool, 1000);
+    }
+
+    function pool() {
+        for (let i = 0; i < MAX_INSTANCES; i++) {
+            let instance = instances[i];
+            countDown(instance);
+            increaseProduction(instance);
+        }
+    }
+
+    function countDown(instance) {
+        let currentTime = instance.currentTime - 1000;
+        instance.currentTime = currentTime;
+    }
+
+    function updateTimer(instance, time) {
+        instances[instance].currentTime = time;
+    }
+
+    function increaseProduction(instance) {        
+        if (!instance.andon && instance.currentTime < 0) {
+            instance.currentTime = convertToMs(config.instances[instance.id].initial);
+            instances[instance.id].produced += 1;
+        }
+    }
+
+    function convertToMs(timeString) {
+        if (!timeString) {
+            return;
+        }
+        let tms = ((Number(timeString.split(':')[0]) * 60) + (Number(timeString.split(':')[1])))
+        tms = tms * 1000;
+        return tms;
+    }
+
+
+
 }

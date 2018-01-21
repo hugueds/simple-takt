@@ -10,7 +10,7 @@
 
 var ip = '';
 
-var socket = io.connect('10.8.66.81:8080');
+var socket = io();
 
 socket.on('connect', function () {
     console.log('Socket Connected');
