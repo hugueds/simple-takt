@@ -12,15 +12,18 @@
 <body>
 
     <div class="config-container">
+
         <div class='row'>
             <div class='input-field col s12'>
                 <label for="instance">INSTÂNCIA</label>
                 <select class='input-field' name="instance" id="instance">
                     <option value="0" >FLUXO QUENTE </option>
                     <br>
-                    <option value="1" >FLUXO FRIO </option>
-                    <br>
                     <option value="2" >FLUXO ONIBUS </option>
+                    <br>
+                    <option value="1" >FLUXO FRIO </option>
+                    <br>                    
+                    <option value="3" >FFU </option>
                 </select>
             </div>
         </div>
@@ -35,8 +38,6 @@
                 <input id='seconds' name='seconds' type="number" min='0' max='59' data-length="2" />
             </div>
         </div>
-
-
 
         <button id='save-button' class='save-button waves-effect waves-light btn'>SALVAR</button>
 

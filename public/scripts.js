@@ -126,10 +126,7 @@ function convertMsToTime(ms) {
     return takt;
 }
 
-
-/*
-CONFIG PAGE
-*/
+// CONFIG PAGE
 
 $('.save-button').on('click', function ($event) {
     saveChanges(function(){

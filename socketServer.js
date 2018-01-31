@@ -13,7 +13,7 @@ module.exports = function (server) {
         for (let i = 0; i < MAX_INSTANCES; i++) {
             instances[i].produced = 0;
         }
-        console.log('Reinitiating production...');
+        console.log(`${new Date().toTimeString().slice(0,8)} => Reinitiating production...`);
     });
 
     var clients = [];
@@ -28,7 +28,7 @@ module.exports = function (server) {
 
         io.emit('new connection', client);
 
-        console.log('New connection =>', client);
+        console.log(`${new Date().toTimeString().slice(0,8)} => New connection ${client} `);
 
         socket.on('get ip', function () {
             socket.emit('ip', clients.indexOf(socket));
@@ -61,14 +61,14 @@ module.exports = function (server) {
         socket.on('save changes', (data) => {
             instances[data.id] = data;
             io.emit('reinitialize', data.id)
-            console.log(`Changes has been done at Instance ${data.id}`);
+            console.log(`${new Date().toTimeString().slice(0,8)} => Changes has been done at Instance ${data.id}`);
         });
 
         socket.on('disconnect', (socket) => {            
             let idx = clients.indexOf(client);            
             if (idx > -1) {
                 clients.splice(idx, 1);
-                console.log('Client disconnected', idx);
+                console.log(`${new Date().toTimeString().slice(0,8)} => Client disconnected ${idx}`);
             }
         });
 
