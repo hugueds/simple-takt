@@ -10,11 +10,11 @@
 
 <body>
 
-    <!-- <div class='title'>
-        <h1>TIMER</h1>
-    </div> -->
-
     <div class="container">
+
+        <div class='title'>
+            <h1>TIMER</h1>
+        </div>
 
         <div class='timer-container'>
             <div class='timer-value' id="timer">
@@ -23,7 +23,7 @@
         </div>
 
         <div class='production-container'>
-
+            <!-- 
             <div class="production-box">
                 <div class='production-text'> OBJETIVO </div>
                 <div class='production-value' id='objective'> 0 </div>
@@ -32,7 +32,7 @@
             <div class="production-box">
                 <div class='production-text'> PRODUZIDOS </div>
                 <div class='production-value' id='produced'> 0 </div>
-            </div>
+            </div> -->
 
         </div>
 
@@ -41,6 +41,15 @@
     <script src='lib/jquery.1.x.min.js'></script>
     <script src='lib/socket.io.js'></script>
     <script src='scripts.js'></script>
+
+    <script>
+        
+        var screen = window.document;
+        screen.addEventListener('dblclick', function() {
+            location.reload();
+        });    
+    
+    </script>
 
 </body>
 

@@ -1,13 +1,15 @@
 module.exports = function (server) {
 
+    // criar comando para mostrar valores das instancias atuais
+
     const io = require('socket.io')(server);
     const cron = require('node-cron');
     const config = require('./config');
 
-    var instances = config.instances;
+    const instances = config.instances;
     const MAX_INSTANCES = instances.length;
-    instances.map(i => i.currentTime = convertToMs(i.initial));
 
+    instances.map(i => i.currentTime = convertToMs(i.initial));
 
     cron.schedule('0 10 7 * * *', function () {
         for (let i = 0; i < MAX_INSTANCES; i++) {
@@ -16,7 +18,7 @@ module.exports = function (server) {
         console.log(`${new Date().toTimeString().slice(0,8)} => Reinitiating production...`);
     });
 
-    var clients = [];
+    let clients = [];
 
     io.on('connection', (socket) => {
 
@@ -31,7 +33,7 @@ module.exports = function (server) {
         console.log(`${new Date().toTimeString().slice(0,8)} => New connection ${client} `);
 
         socket.on('get ip', function () {
-            socket.emit('ip', clients.indexOf(socket));
+            io.emit('ip', clients.indexOf(socket));
         });
 
         socket.on('get timer', (data) => {
@@ -49,7 +51,7 @@ module.exports = function (server) {
         socket.on('andon', (data) => {
             let andon = !instances[data.id].andon
             instances[data.id].andon = andon
-            console.log('Andon Call for station ID:', data.id, 'is', andon);
+            console.log(`${new Date().toTimeString().slice(0,8)} => Andon Call for station ID: ${data.id} is ${data.andon}`);            
             socket.emit('andon', andon);
         });
 
@@ -58,10 +60,20 @@ module.exports = function (server) {
             socket.emit('updated', `Instance ${instances[data.instance]} updated`);
         });
 
-        socket.on('save changes', (data) => {
+        socket.on('save changes', (data) => {            
             instances[data.id] = data;
-            io.emit('reinitialize', data.id)
+            io.emit('reinitialize', data);
+            console.dir(instances[data.id]);
             console.log(`${new Date().toTimeString().slice(0,8)} => Changes has been done at Instance ${data.id}`);
+        });
+
+        socket.on('reload page', (ip) => {
+
+        });
+
+        socket.on('reload-command', (data) => {
+            io.emit('reload', 'all');
+            console.log('Reiniciando telas');
         });
 
         socket.on('disconnect', (socket) => {            
@@ -78,6 +90,7 @@ module.exports = function (server) {
 
     function init() {
         const routineInterval = setInterval(pool, 1000);
+        io.emit('reload', 'all');
     }
 
     function pool() {

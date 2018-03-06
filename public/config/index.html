@@ -31,7 +31,7 @@
         <div class="row">
             <div class='input-field col s6'>
                 <label for="minutes"> MINUTOS </label>
-                <input name='minutes' id='minutes' type="number" min='0' max='59' />
+                <input name='minutes' id='minutes' type="number" min='0' max='59' data-length="2" />
             </div>        
             <div class='input-field col s6'>
                 <label for="seconds"> SEGUNDOS </label>
@@ -40,6 +40,11 @@
         </div>
 
         <button id='save-button' class='save-button waves-effect waves-light btn'>SALVAR</button>
+
+        <br>
+        <br>
+
+        <button id='reload-button' class='reload-button waves-effect waves-light btn'>RECARREGAR TELAS</button>
 
     </div>
 

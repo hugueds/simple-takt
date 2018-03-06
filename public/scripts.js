@@ -40,6 +40,10 @@ socket.on('andon', function(andon) {
     instance.andon = andon;
 });
 
+socket.on('reload', function() {
+    location.reload();
+});
+
 $(document).ready(function () {
   	init(function(){
         socketHandler();
@@ -129,14 +133,16 @@ function convertMsToTime(ms) {
 // CONFIG PAGE
 
 $('.save-button').on('click', function ($event) {
-    saveChanges(function(){
-        console.log('Changes Saved');
-    });    
+    saveChanges();
+});
+
+$('#reload-button').on('click', function ($event) {
+    socket.emit('reload-command', 'all');
 })
 
 function saveChanges(callback) {
     var inst = {};
-    inst.id = $('select[name=instance]').val();
+    inst.id = parseInt($('select[name=instance]').val());
     var valueSeconds = parseInt($('input[name=seconds]').val());
     var valueMinutes = parseInt($('input[name=minutes]').val());
     if (valueMinutes == 0 && valueSeconds == 0){
@@ -147,8 +153,7 @@ function saveChanges(callback) {
     }
     inst.initial = $('input[name=minutes]').val() + ':' + $('input[name=seconds]').val();    
     console.log('Enviando dados para o servidor', inst);
-    socket.emit('save changes', inst);   
-    callback();
+    socket.emit('save changes', inst);       
 }
 
 $('input[name=minutes]').keydown(function (e) {

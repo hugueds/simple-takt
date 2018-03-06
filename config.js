@@ -3,34 +3,34 @@ exports.instances = [{
         name: "Quente",
         initial: "5:30",
         currentTime: 0,
-        objective: 100,
+        objective: 75,
         produced: 0,
         andon: false
     },
     {
         id: 1,
         name: "Frio",
-        initial: "6:30",
+        initial: "6:20",
         currentTime: 0,
-        objective: 80,
+        objective: 68,
         produced: 0,
         andon: false
     },
     {
         id: 2,
         name: "Bus",
-        initial: "18:00",
+        initial: "17:00",
         currentTime: 0,
-        objective: 75,
+        objective: 15,
         produced: 0,
         andon: false
     },
     {
         id: 3,
         name: "FFU",
-        initial: "7:00",
+        initial: "15:00",
         currentTime: 0,
-        objective: 75,
+        objective: 15,
         produced: 0,
         andon: false
     }

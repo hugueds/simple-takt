@@ -92,13 +92,11 @@
             $('select').material_select();
         });
 
-
         $('#save-button').on('click', function ($event) {
             var instance = $('input[name="flux"]:checked').val(); //$('select[name=instance]').val();
             localStorage.setItem('currentInstance', JSON.stringify(instance));
             window.location = '/';
         });      
-
 
     </script>
 
