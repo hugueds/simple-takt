@@ -15,10 +15,11 @@
         h1 {
             text-align: center;
         }
+        
 
         #save-button {
-            height: 100px;
-            width: 250px;
+            height: 200px;
+            width: 400px;
             position: relative;
             margin: auto;
             margin-left: 42.6%;
@@ -32,6 +33,10 @@
             text-align: center;
             display: flex;
             justify-content: space-between;
+        }
+
+        .flux-container > label {
+            font-size: 1.4em !important;
         }
 
         .flux-radio {
@@ -73,6 +78,12 @@
                 <input class='flux-radio' name="flux" type="radio" id="ffu-flux" value='3' />
                 <label for="ffu-flux">FFU</label>
 
+                <input class='flux-radio' name="flux" type="radio" id="tvl-flux" value='4' />
+                <label for="tvl-flux">TVL</label>
+
+                <input class='flux-radio' name="flux" type="radio" id="pmv-flux" value='5' />
+                <label for="pmv-flux">PM VALVULAS</label>
+
             </div>
 
         </div>
@@ -83,7 +94,7 @@
 
 
     <script src='../lib/jquery.1.x.min.js'></script>
-    <script src='../materialize.min.js'></script>
+    <script src='../lib/materialize.min.js'></script>
 
     <script>
 

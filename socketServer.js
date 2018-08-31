@@ -61,7 +61,8 @@ module.exports = function (server) {
         });
 
         socket.on('save changes', (data) => {            
-            instances[data.id] = data;
+            instances[data.id].initial = data.initial;
+            instances[data.id].currentTime = 0;
             io.emit('reinitialize', data);
             console.dir(instances[data.id]);
             console.log(`${new Date().toTimeString().slice(0,8)} => Changes has been done at Instance ${data.id}`);

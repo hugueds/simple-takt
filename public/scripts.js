@@ -5,7 +5,7 @@
     objective: 0,
     produced: 0,
     currentTime: 0,
-    andon : false
+    andon: false
 };
 
 var ip = '';
@@ -16,56 +16,63 @@ socket.on('connect', function () {
     console.log('Socket Connected');
     setInterval(function () {
         if (!instance) return;
-        socket.emit('get timer', instance);            
+        socket.emit('get timer', instance);
     }, 1000);
 });
 
-socket.on('timer', function (data) {              
+socket.on('timer', function (data) {
     updateTimer(data.currentTime);
+    updateAndon(data.currentTime, data.andon)
     $('#objective').text(data.objective);
     $('#produced').text(data.produced);
 });
 
-socket.on('new connection', function(ip) {
+socket.on('new connection', function (ip) {
     console.log('Novo dispositivo conectado: ', ip);
 });
 
 socket.emit('get ip');
 
-socket.on('ip', function(data) {
+socket.on('ip', function (data) {
     console.log('Meu endereço: ', data);
 });
 
-socket.on('andon', function(andon) {
+socket.on('andon', function (andon) {
     instance.andon = andon;
 });
 
-socket.on('reload', function() {
+socket.on('reload', function () {
     location.reload();
 });
 
+socket.on('reinitialize', function (data) {
+    if (data.id == instance.id) {
+        location.reload();
+    }
+});
+
 $(document).ready(function () {
-  	init(function(){
+    init(function () {
         socketHandler();
     });
 });
 
-function init(callback) {    
+function init(callback) {
     instance.id = getLocalInstance();
     console.log(instance)
     if ((!instance.id || instance.id == -1) && window.location.pathname == "/") {
         window.location = '/home';
         localStorage.clear('currentInstance');
-       return;
+        return;
     }
-    window.addEventListener('keydown', function (key) {        
-        if (key.keyCode == 34) {
+    window.addEventListener('keydown', function (key) {
+        if (key.keyCode == 34) { // Page Down
             // if (instance.currentTime <= 0){
             reinitialize(instance);
             // }            
         }
-        if (key.keyCode == 33 ) {
-            console.log('Chamando andon');            
+        if (key.keyCode == 33) { // Page Up
+            console.log('Chamando andon');
             socket.emit('andon', instance);
         }
     });
@@ -74,9 +81,22 @@ function init(callback) {
 
 }
 
+
+
 function reinitialize(inst) {
     socket.emit('reinitialize', inst);
     return true;
+}
+
+function updateAndon(ms, andon) {
+    if (andon && ms >= 0) {
+        $('body').addClass('andon-timer');
+    } else if (andon && ms <= 0) {
+        $('body').removeClass('andon-timer');
+    }
+    if (!andon) {
+        $('body').removeClass('andon-timer');
+    }
 }
 
 function updateTimer(ms) {
@@ -88,11 +108,7 @@ function updateTimer(ms) {
         $('body').addClass('negative-timer');
         $('.timer-value').addClass('negative-timer-value');
     }
-    if (instance.andon && ms >= 0 ) {
-        $('body').addClass('andon-timer');        
-    } else {
-        $('body').removeClass('andon-timer');                
-    }
+
     $('#timer').text(timer);
     return true;
 }
@@ -145,38 +161,38 @@ function saveChanges(callback) {
     inst.id = parseInt($('select[name=instance]').val());
     var valueSeconds = parseInt($('input[name=seconds]').val());
     var valueMinutes = parseInt($('input[name=minutes]').val());
-    if (valueMinutes == 0 && valueSeconds == 0){
+    if (valueMinutes == 0 && valueSeconds == 0) {
         return alert('O valor deve ser maior do que 0');
     }
-    if (valueMinutes > 59 || valueSeconds > 59 || (typeof valueSeconds != 'number') || (typeof valueMinutes != 'number') ){
+    if ( /* valueMinutes > 59  || */ valueSeconds > 59 || (typeof valueSeconds != 'number') || (typeof valueMinutes != 'number')) {
         return alert('Favor preencher com horário válido');
     }
-    inst.initial = $('input[name=minutes]').val() + ':' + $('input[name=seconds]').val();    
+    inst.initial = $('input[name=minutes]').val() + ':' + $('input[name=seconds]').val();
     console.log('Enviando dados para o servidor', inst);
-    socket.emit('save changes', inst);       
+    socket.emit('save changes', inst);
 }
 
 $('input[name=minutes]').keydown(function (e) {
     var value1 = parseInt($('input[name=minutes]').val());
-    if (value1 >59){
+    if (value1 > 999) {
         $('input[name=minutes]').val(59);
-    } else if (value1 < 0 ){
+    } else if (value1 < 0) {
         $('input[name=minutes]').val(0);
     }
 })
 
-$('input[name=seconds]').keydown(function (e) {   
-    var value2 = parseInt($('input[name=seconds]').val());    
-    if (value2 > 59){
+$('input[name=seconds]').keydown(function (e) {
+    var value2 = parseInt($('input[name=seconds]').val());
+    if (value2 > 59) {
         $('input[name=seconds]').val(59);
-    } else if (value2 < 0 ){
+    } else if (value2 < 0) {
         $('input[name=seconds]').val(0);
-    }    
+    }
 })
 
 
 function socketHandler() {
 
-    
-    
+
+
 }

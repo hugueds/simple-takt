@@ -24,6 +24,10 @@
                     <option value="1" >FLUXO FRIO </option>
                     <br>                    
                     <option value="3" >FFU </option>
+                    <br>                    
+                    <option value="4" >TVL </option>
+                    <br>                    
+                    <option value="5" >PM VALVULAS </option>
                 </select>
             </div>
         </div>
@@ -31,7 +35,7 @@
         <div class="row">
             <div class='input-field col s6'>
                 <label for="minutes"> MINUTOS </label>
-                <input name='minutes' id='minutes' type="number" min='0' max='59' data-length="2" />
+                <input name='minutes' id='minutes' type="number" min='0' max='999' data-length="3" />
             </div>        
             <div class='input-field col s6'>
                 <label for="seconds"> SEGUNDOS </label>
@@ -52,7 +56,7 @@
 
     <script src='../lib/socket.io.js'></script>    
     <script src='../lib/jquery.min.js'></script>
-    <script src='../materialize.min.js'></script>
+    <script src='../lib/materialize.min.js'></script>
     <script src='../scripts.js'></script>
 
     <script>
