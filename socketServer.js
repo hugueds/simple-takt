@@ -2,7 +2,7 @@ module.exports = function (server) {
 
     // criar comando para mostrar valores das instancias atuais
 
-    const io = require('socket.io')(server);
+    const io = require('socket.io')(server, { path: '/takt/socket.io' });
     const cron = require('node-cron');
     const config = require('./config');
 

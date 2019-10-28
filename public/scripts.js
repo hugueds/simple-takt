@@ -10,7 +10,7 @@
 
 var ip = '';
 
-var socket = io();
+var socket = io('/', {path: '/takt/socket.io' });
 
 socket.on('connect', function () {
     console.log('Socket Connected');

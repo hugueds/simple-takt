@@ -14,7 +14,7 @@ var port;
 /**
  * Get port from environment and store in Express.
  */
-port = normalizePort(process.env.PORT || '82');
+port = normalizePort(process.env.PORT || '8080');
 
 app.set('port', port);
 
@@ -87,6 +87,7 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
+  console.log('Listening on', bind);
   debug('Listening on ' + bind);
 }
 
