@@ -19,7 +19,7 @@ exports.instances = [{
     {
         id: 2,
         name: "Bus",
-        initial: "16:00",
+        initial: "15:00",
         currentTime: 0,
         objective: 15,
         produced: 0,
