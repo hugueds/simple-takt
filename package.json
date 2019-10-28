@@ -21,7 +21,7 @@
     "sqlite3": "^3.1.11"
   },
   "devDependencies": {
-    "jquery": "^3.2.1",
+    "jquery": "^3.4.0",
     "materialize": "^1.0.0"
   }
 }
